@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>إضافة تصريح جديد - لوحة التحكم</title>
+    <style>
+        :root {
+            --bg-color: #080f1e;
+            --card-bg: #111a27;
+            --box-bg: #1a2435;
+            --btn-color: #0dbcd1;
+            --text-title: #ffffff;
+            --text-sub: #8191a7;
+            --border-card: rgba(255, 255, 255, 0.08);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-title);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-card);
+            border-radius: 20px;
+            padding: 36px;
+            max-width: 600px;
+            width: 100%;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+        }
+
+        h2 {
+            margin-bottom: 20px;
+            font-size: 24px;
+            color: var(--text-title);
+            text-align: center;
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+            text-align: right;
+        }
+
+        label {
+            display: block;
+            font-size: 13.5px;
+            color: var(--text-sub);
+            margin-bottom: 8px;
+        }
+
+        input[type="text"], input[type="date"], input[type="file"] {
+            width: 100%;
+            padding: 12px 14px;
+            background-color: var(--box-bg);
+            border: 1px solid var(--border-card);
+            border-radius: 10px;
+            color: var(--text-title);
+            font-size: 15px;
+            outline: none;
+        }
+
+        input[type="file"] {
+            padding: 8px;
+            cursor: pointer;
+        }
+
+        .btn-submit {
+            width: 100%;
+            padding: 14px;
+            background-color: var(--btn-color);
+            color: #03141c;
+            font-weight: 800;
+            font-size: 16px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: opacity 0.2s;
+        }
+
+        .btn-submit:hover {
+            opacity: 0.9;
+        }
+
+        .alert-success {
+            background-color: rgba(13, 188, 209, 0.15);
+            border: 1px solid var(--btn-color);
+            color: var(--btn-color);
+            padding: 14px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            text-align: center;
+            font-size: 14px;
+        }
+
+        .qr-preview {
+            text-align: center;
+            margin-top: 15px;
+        }
+
+        .qr-preview img {
+            width: 160px;
+            height: 160px;
+            border-radius: 10px;
+            background: #fff;
+            padding: 6px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="card">
+        <h2>إصدار تصريح جديد</h2>
+
+        {% if success %}
+        <div class="alert-success">
+            تم إضافة التصريح وتوليد الـ QR بنجاح!
+            <div class="qr-preview">
+                <p style="margin-bottom: 8px; color: #fff;">صورة الـ QR المولّدة:</p>
+                <img src="/static/{{ qr_filename }}" alt="QR Code">
+                <p style="margin-top: 10px;">
+                    <a href="/qr/{{ permit_uuid }}" target="_blank" style="color: var(--btn-color); text-decoration: none; font-weight: bold;">معاينة صفحة التحقق ↗</a>
+                </p>
+            </div>
+        </div>
+        {% endif %}
+
+        <form action="/admin/add" method="post" enctype="multipart/form-data">
+            <div class="form-group">
+                <label>رقم التصريح:</label>
+                <input type="text" name="permit_number" placeholder="مثال: 14570" required>
+            </div>
+
+            <div class="form-group">
+                <label>اسم الشركة:</label>
+                <input type="text" name="company_name" placeholder="مثال: كبار الشخصيات VIP" required>
+            </div>
+
+            <div class="form-group">
+                <label>تاريخ الإصدار:</label>
+                <input type="date" name="issue_date" required>
+            </div>
+
+            <div class="form-group">
+                <label>تاريخ الانتهاء:</label>
+                <input type="date" name="expiry_date" required>
+            </div>
+
+            <div class="form-group">
+                <label>ملف التصريح (PDF):</label>
+                <input type="file" name="pdf_file" accept=".pdf" required>
+            </div>
+
+            <button type="submit" class="btn-submit">توليد التصريح والـ QR Code</button>
+        </form>
+    </div>
+
+</body>
+</html>
